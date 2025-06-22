@@ -1,2 +1,2 @@
 # Connect-Spin-Share
-It's an activity for building interaction between teammates 
+It's a fun activity for building interaction between teammates 
