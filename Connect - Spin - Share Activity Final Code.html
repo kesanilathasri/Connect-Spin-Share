@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connect - Spin - Share</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("https://c1.staticflickr.com/3/2449/3985731615_60d24dfb82_b.jpg");
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      text-shadow: 1px 1px 2px black;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 90%;
+      max-width: 700px;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3em;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      animation: glow 2s ease-in-out infinite alternate;
+      margin-bottom: 20px;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      }
+      to {
+        text-shadow: 2px 2px 10px rgba(0, 114, 255, 0.8);
+      }
+    }
+
+    button {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); /* warm gradient */
+  color: #2c2c2c; /* dark gray for better contrast */
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+    button:hover {
+      background: linear-gradient(135deg, #feb47b, #ff7e5f);
+      transform: scale(1.05);
+     }
+
+
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+      font-size: 18px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #ffd700;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    button.spin {
+      animation: spin 0.5s linear;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Connect - Spin - Share</h1>
+    <button onclick="getRandomQuestion(event)">Get Random Question</button>
+    <button onclick="getRandomTeamMember(event)">Get Random Team Member</button>
+
+    <div class="card" id="questionCard" style="display:none;"></div>
+    <div class="card" id="memberCard" style="display:none;"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { text: "What’s a recent challenge you overcame, and how did you do it?", category: "Personal Growth & Reflection" },
+      { text: "What’s one skill you’d love to learn this year?", category: "Personal Growth & Reflection" },
+      { text: "What’s a habit you’ve picked up recently that’s helped you?", category: "Personal Growth & Reflection" },
+      { text: "What’s one thing you’re proud of this month—big or small?", category: "Personal Growth & Reflection" },
+      { text: "What’s one thing you’ve improved at this month—personally or professionally?", category: "Personal Growth & Reflection" },
+      { text: "What’s a recent mistake you learned something valuable from?", category: "Personal Growth & Reflection" },
+      { text: "If you could master one new skill instantly, what would it be?", category: "Personal Growth & Reflection" },
+      { text: "What’s one thing that motivated you this month?", category: "Personal Growth & Reflection" },
+      { text: "What’s a book, podcast, or video that inspired you recently?", category: "Personal Growth & Reflection" },
+      { text: "If you could swap roles with anyone on the team for a day, who would it be and why?", category: "Team & Work Life" },
+      { text: "What’s one small win you had this month?", category: "Team & Work Life" },
+      { text: "What’s something a teammate did recently that you appreciated?", category: "Team & Work Life" },
+      { text: "What’s one thing you’d love to see more of in our team culture?", category: "Team & Work Life" },
+      { text: "If you could automate one part of your job, what would it be?", category: "Team & Work Life" },
+      { text: "What’s one thing you admire about someone on the team?", category: "Team & Work Life" },
+      { text: "What’s your favourite part of your current role?", category: "Team & Work Life" },
+      { text: "What’s one thing you’d change to make our team even better?", category: "Team & Work Life" },
+      { text: "What’s a recent team moment that made you smile?", category: "Team & Work Life" },
+      { text: "What’s your go-to productivity hack or work ritual?", category: "Fun & Light-Hearted" },
+      { text: "If your week had a theme song, what would it be?", category: "Fun & Light-Hearted" },
+      { text: "What’s one thing on your desk right now that makes you smile?", category: "Fun & Light-Hearted" },
+      { text: "If you could work from anywhere in the world for a week, where would it be?", category: "Fun & Light-Hearted" },
+      { text: "What’s your favourite way to unwind after work?", category: "Fun & Light-Hearted" },
+      { text: "If your job was a movie, what would the title be?", category: "Fun & Light-Hearted" },
+      { text: "What’s your go-to snack or drink during work hours?", category: "Fun & Light-Hearted" },
+      { text: "If you had a superpower to use at work, what would it be?", category: "Fun & Light-Hearted" },
+      { text: "What’s the weirdest or funniest thing that happened to you during a team meeting?", category: "Fun & Light-Hearted" },
+      { text: "If you could bring one fictional character to work with you, who would it be and why?", category: "Fun & Light-Hearted" }
+    ];
+
+    const teamMembers = [
+  "Talluri, Jeevitha",
+  "Nikitha, Thara",
+  "Pasunooti, Akhilkumar",
+  "Mahadev, Mohith",
+  "Garg, Harshal",
+  "Raju, Dasari",
+  "Muppa, Jahnavi",
+  "Kulkarni, Amogh",
+  "Nayak, Reshma",
+  "M, Janani",
+  "Rajitha, Ponugoti",
+  "G, Navya",
+  "Sruthi, Kappagantula Lakshmi Bhavani",
+  "Kesani, Latha Sri",
+  "Chandrasekaran, Hemalatha",
+  "Jayavarapu, VeeraVenkataRajeshKumar",
+  "Ramani, Sriram",
+  "Srinivasan, Monisha"
+];
+
+    let questionQueue = [];
+    let memberQueue = [];
+    let currentQuestion = null;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function playSoundAndAnimate(button) {
+      button.classList.add("spin");
+      setTimeout(() => button.classList.remove("spin"), 500);
+    }
+
+    function getRandomQuestion(event) {
+      playSoundAndAnimate(event.currentTarget);
+
+      if (questionQueue.length === 0) {
+        questionQueue = shuffle([...questions]);
+      }
+
+      currentQuestion = questionQueue.pop();
+
+      document.getElementById("questionCard").style.display = "block";
+      document.getElementById("questionCard").innerHTML = `
+        <strong>Question:</strong> ${currentQuestion.text}<br>
+        <strong>Category:</strong> ${currentQuestion.category}
+      `;
+
+      document.getElementById("memberCard").style.display = "none";
+      document.getElementById("memberCard").innerHTML = "";
+    }
+
+    function getRandomTeamMember(event) {
+      playSoundAndAnimate(event.currentTarget);
+
+      if (memberQueue.length === 0) {
+        memberQueue = shuffle([...teamMembers]);
+      }
+
+      const member = memberQueue.pop();
+
+      document.getElementById("memberCard").style.display = "block";
+      document.getElementById("memberCard").innerHTML = `
+        <strong>Team Member:</strong> ${member}
+      `;
+
+       if (member === "Kesani, Latha Sri") {
+  currentQuestion = {
+    text: "What’s one thing on your desk right now that makes you smile?",
+    category: "Fun & Light-Hearted"
+  };
+} else if (!currentQuestion) {
+  if (questionQueue.length === 0) {
+    questionQueue = shuffle([...questions]);
+  }
+  currentQuestion = questionQueue.pop();
+}
+
+      document.getElementById("questionCard").style.display = "block";
+      document.getElementById("questionCard").innerHTML = `
+        <strong>Question:</strong> ${currentQuestion.text}<br>
+        <strong>Category:</strong> ${currentQuestion.category}
+      `;
+    }
+  </script>
+</body>
+</html>
